@@ -10,6 +10,12 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+const formatDate = (date: string | Date) => {
+  const d = new Date(date)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+}
+
 export default function PaymentManager({ teachers }: { teachers: any[] }) {
   const [teacherId, setTeacherId] = useState('')
   const [summary, setSummary] = useState<any>(null)
@@ -139,8 +145,8 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
                       <Receipt size={18} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs text-muted font-bold tracking-tighter uppercase">{new Date(p.date).toLocaleDateString()}</span>
-                      <span className="text-lg font-black text-foreground">₹{p.amount.toLocaleString()}</span>
+                      <span className="text-xs text-muted-foreground/60 font-black tracking-widest uppercase">{formatDate(p.date)}</span>
+                      <span className="text-xl font-black text-white group-hover:text-success transition-colors">₹{p.amount.toLocaleString()}</span>
                     </div>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
