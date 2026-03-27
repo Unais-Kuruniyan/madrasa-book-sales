@@ -39,7 +39,7 @@ export default function TeacherList({ initialTeachers, classes }: { initialTeach
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center bg-card/30 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card/30 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-xl">
         <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight">
           <div className="p-2 bg-primary/20 rounded-xl text-primary ring-1 ring-primary/30">
             <Users size={28} />
@@ -63,7 +63,7 @@ export default function TeacherList({ initialTeachers, classes }: { initialTeach
             </div>
             <h3 className="text-lg font-bold">{editingId ? 'Update Teacher Details' : 'Onboard New Teacher'}</h3>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input 
               className="input-field" 
               placeholder="Name" 
@@ -96,7 +96,7 @@ export default function TeacherList({ initialTeachers, classes }: { initialTeach
               ))}
             </div>
           </div>
-          <div className="flex gap-2 justify-end pt-4 border-t border-border">
+          <div className="flex flex-wrap gap-2 justify-end pt-4 border-t border-border">
             <button type="button" className="btn btn-secondary" onClick={() => { setIsAdding(false); setEditingId(null); }}>
               <X size={18} />
               <span>Cancel</span>

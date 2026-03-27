@@ -1,5 +1,5 @@
 import { getDashboardStats } from '@/lib/actions/report'
-import { ShoppingBag, Landmark, Wallet, Percent, TrendingUp } from 'lucide-react'
+import { ShoppingBag, Landmark, Wallet, TrendingUp } from 'lucide-react'
 
 export default async function Dashboard() {
   const stats = await getDashboardStats()
@@ -17,7 +17,7 @@ export default async function Dashboard() {
           <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-4 ring-1 ring-primary/30">Next-Gen Management</span>
           <h2 className="text-3xl font-black mb-4 tracking-tighter leading-none">Streamline Your <span className="text-primary text-glow">Madrasa Workflow</span></h2>
           <p className="text-muted-foreground font-medium mb-8 leading-relaxed max-w-sm">A centralized, high-performance ecosystem for tracking curriculum, orders, and financial data with surgical precision.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-3">
             <button className="btn btn-primary shadow-2xl shadow-primary/40 px-8">Initialize Order</button>
             <button className="btn btn-secondary border border-white/10 bg-white/5 backdrop-blur-sm">View Analytics</button>
           </div>
@@ -61,25 +61,27 @@ export default async function Dashboard() {
 
         <div className="card flex flex-col justify-between">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-destructive/10 rounded-lg text-destructive">
+            <div className="p-2 bg-warning/10 rounded-lg text-warning">
               <Wallet size={24} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted mb-1">Total Due</p>
-            <p className="text-3xl font-bold text-destructive">₹{stats.totalDueAmount.toLocaleString()}</p>
+            <p className="text-sm font-medium text-muted mb-1">Total Expenses</p>
+            <p className="text-3xl font-bold text-warning">₹{stats.totalExpensesAmount.toLocaleString()}</p>
           </div>
         </div>
 
         <div className="card flex flex-col justify-between">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-warning/10 rounded-lg text-warning">
-              <Percent size={24} />
+            <div className={`p-2 rounded-lg ${stats.netProfitAmount >= 0 ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}>
+              <TrendingUp size={24} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted mb-1">Commission Earned</p>
-            <p className="text-3xl font-bold text-warning">₹{stats.totalCommissionEarned.toLocaleString()}</p>
+            <p className="text-sm font-medium text-muted mb-1">Net Profit</p>
+            <p className={`text-3xl font-bold ${stats.netProfitAmount >= 0 ? 'text-success' : 'text-destructive'}`}>
+              ₹{stats.netProfitAmount.toLocaleString()}
+            </p>
           </div>
         </div>
       </div>

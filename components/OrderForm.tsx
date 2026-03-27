@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createOrder, OrderItemInput } from '@/lib/actions/order'
-import { ShoppingCart, Plus, Trash2, Layers, BookOpen, Percent, Calculator, User, GraduationCap, CheckCircle2, PlusCircle } from 'lucide-react'
+import { ShoppingCart, Plus, Trash2, Layers, BookOpen, Calculator, User, GraduationCap, CheckCircle2 } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -21,8 +21,6 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
   const selectedClass = classes.find(c => c.id === parseInt(classId))
 
   const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0)
-  const commission = total * 0.15
-  const net = total - commission
 
   const addItem = (type: 'SET' | 'BOOK', id: string, name: string, price: number) => {
     const existing = items.find(i => (type === 'SET' ? i.bookSetId === id : i.bookId === id))
@@ -157,20 +155,13 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
               <div className="flex justify-between items-center text-sm font-medium">
                 <span className="text-muted-foreground flex items-center gap-2 italic">
                   <Calculator size={14} />
-                  Gross Total
+                  Order Total
                 </span>
                 <span className="font-bold">₹{total.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between items-center text-sm font-medium">
-                <span className="text-warning flex items-center gap-2 italic">
-                  <Percent size={14} />
-                  IEB (15%)
-                </span>
-                <span className="font-bold text-warning">- ₹{commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
               <div className="pt-4 border-t border-border flex justify-between items-center">
-                <span className="text-base font-black uppercase tracking-tighter text-primary">Net Payable</span>
-                <span className="text-xl font-black text-primary">₹{net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="text-base font-black uppercase tracking-tighter text-primary">Payable Amount</span>
+                <span className="text-xl font-black text-primary">₹{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>

@@ -17,15 +17,14 @@ export async function createOrder(data: {
   items: OrderItemInput[]
 }) {
   const totalAmount = data.items.reduce((sum, item) => sum + item.quantity * item.price, 0)
-  const commission = totalAmount * 0.15
-  const netCost = totalAmount - commission
+  const netCost = totalAmount
 
   const order = await prisma.order.create({
     data: {
       teacherId: data.teacherId,
       classId: data.classId,
       totalAmount,
-      commission,
+      commission: 0,
       netCost,
       status: 'PENDING',
       items: {
@@ -41,7 +40,7 @@ export async function createOrder(data: {
   })
 
   revalidatePath('/orders')
-  revalidatePath('/dashboard')
+  revalidatePath('/')
   return order
 }
 
@@ -78,5 +77,5 @@ export async function deleteOrder(id: string) {
   await prisma.orderItem.deleteMany({ where: { orderId: id } })
   await prisma.order.delete({ where: { id } })
   revalidatePath('/orders')
-  revalidatePath('/dashboard')
+  revalidatePath('/')
 }

@@ -79,7 +79,7 @@ export default function Sidebar() {
                 onClick={() => setIsOpen(false)}
               >
                 {isActive && (
-                  <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary),0.8)]"></div>
+                  <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full shadow-primary-glow"></div>
                 )}
                 <item.icon size={20} className={cn("transition-colors", isActive ? "text-primary" : "group-hover:text-primary")} />
                 <span className="font-bold tracking-tight">{item.name}</span>
@@ -92,9 +92,7 @@ export default function Sidebar() {
         </nav>
 
         <div className="pt-4 border-t border-border mt-auto">
-          <p className="text-xs text-muted text-center italic">
-            © 2026 Madrasa Book Depot
-          </p>
+          <p className="text-xs text-muted text-center italic">(c) 2026 Madrasa Book Depot</p>
         </div>
       </aside>
     </>
