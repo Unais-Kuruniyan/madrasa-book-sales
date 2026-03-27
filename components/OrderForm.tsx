@@ -130,17 +130,17 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
               <span>Cart Summary</span>
             </h4>
             
-            <div className="flex flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+            <div className="flex flex-col gap-2 max-h-[300px] lg:max-h-[400px] overflow-y-auto pr-1 no-scrollbar">
               {items.map((item, index) => (
-                <div key={index} className="flex justify-between items-center p-4 bg-secondary/30 rounded-xl border border-border/50 animate-in fade-in slide-in-from-right-2 duration-300">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-sm">{item.type === 'SET' ? 'Full Set' : selectedClass.books.find((b: any) => b.id === item.bookId)?.name}</span>
-                    <span className="text-xs text-muted font-medium">Quantity: {item.quantity}</span>
+                <div key={index} className="flex justify-between items-center p-3 bg-secondary/30 rounded-xl border border-border/50 animate-in fade-in slide-in-from-right-2 duration-300">
+                  <div className="flex flex-col min-w-0 flex-1 mr-4">
+                    <span className="font-bold text-sm truncate">{item.type === 'SET' ? 'Full Set' : selectedClass.books.find((b: any) => b.id === item.bookId)?.name}</span>
+                    <span className="text-[10px] text-muted font-black uppercase tracking-widest">Qty: {item.quantity}</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="font-black text-foreground">₹{(item.quantity * item.price).toLocaleString()}</span>
-                    <button type="button" className="p-1.5 hover:bg-destructive/10 rounded-lg text-muted hover:text-destructive transition-colors" onClick={() => removeItem(index)}>
-                      <Trash2 size={16} />
+                  <div className="flex items-center gap-3">
+                    <span className="font-black text-sm text-foreground whitespace-nowrap">₹{(item.quantity * item.price).toLocaleString()}</span>
+                    <button type="button" className="p-2 hover:bg-destructive/10 rounded-lg text-muted hover:text-destructive transition-colors" onClick={() => removeItem(index)}>
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
               )}
             </div>
 
-            <div className="mt-auto bg-card p-6 rounded-2xl border border-border shadow-inner space-y-4">
+            <div className="lg:sticky lg:top-8 mt-auto bg-card/60 backdrop-blur-xl p-6 rounded-2xl border border-border shadow-inner space-y-4">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span className="text-muted-foreground flex items-center gap-2 italic">
                   <Calculator size={14} />
@@ -164,13 +164,13 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
               <div className="flex justify-between items-center text-sm font-medium">
                 <span className="text-warning flex items-center gap-2 italic">
                   <Percent size={14} />
-                  IEB Commission (15%)
+                  IEB (15%)
                 </span>
                 <span className="font-bold text-warning">- ₹{commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="pt-4 border-t border-border flex justify-between items-center">
-                <span className="text-lg font-black uppercase tracking-tighter text-primary">Net Payable</span>
-                <span className="text-2xl font-black text-primary">₹{net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="text-base font-black uppercase tracking-tighter text-primary">Net Payable</span>
+                <span className="text-xl font-black text-primary">₹{net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
