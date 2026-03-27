@@ -100,7 +100,7 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
       )}
 
       {teacherId && (
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="card bg-secondary/10 border-border/40">
             <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
               <Landmark className="text-primary" size={20} />

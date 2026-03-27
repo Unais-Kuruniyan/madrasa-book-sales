@@ -102,11 +102,13 @@ body {
   background-color: hsla(222, 47%, 13%, 0.5);
   border: 1px solid var(--glass-border);
   border-radius: calc(var(--radius) - 0.25rem);
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   color: hsl(var(--foreground));
-  font-size: 0.875rem;
+  font-size: 1rem; /* 16px to prevent iOS auto-zoom */
   width: 100%;
   transition: all 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .input-field:focus {
@@ -130,6 +132,8 @@ body {
   gap: 0.5rem;
   position: relative;
   overflow: hidden;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .btn:active { transform: scale(0.95); }
@@ -248,7 +252,11 @@ body {
   position: sticky;
   top: 0;
   z-index: 40;
+  height: 64px;
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 @media (min-width: 1024px) {
   .mobile-header {
