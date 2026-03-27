@@ -9,6 +9,12 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+const formatDate = (date: string | Date) => {
+  const d = new Date(date)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+}
+
 export default function OrderList({ orders }: { orders: any[] }) {
   const handleMarkDistributed = async (id: string) => {
     if (confirm('Mark as distributed?')) {
@@ -39,7 +45,7 @@ export default function OrderList({ orders }: { orders: any[] }) {
                 <span>{o.class.name}</span>
                 <span className="mx-1">•</span>
                 <Clock size={12} />
-                <span>{new Date(o.date).toLocaleDateString()}</span>
+                <span>{formatDate(o.date)}</span>
               </div>
             </div>
             <div className="text-right flex flex-col items-end gap-2">
