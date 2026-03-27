@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id        String    @id @default(cuid())
+  name      String
+  contact   String?
+  classes   Class[]   @relation("TeacherClasses")
+  orders    Order[]
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Class {
+  id        Int       @id // 1 to 10
+  name      String
+  teachers  Teacher[] @relation("TeacherClasses")
+  books     Book[]
+  bookSets  BookSet[]
+  orders    Order[]
+}
+
+model Book {
+  id        String    @id @default(cuid())
+  name      String
+  price     Float
+  classId   Int
+  class     Class     @relation(fields: [classId], references: [id])
+  orderItems OrderItem[]
+}
+
+model BookSet {
+  id        String    @id @default(cuid())
+  classId   Int
+  price     Float
+  class     Class     @relation(fields: [classId], references: [id])
+  orderItems OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  teacherId   String
+  teacher     Teacher     @relation(fields: [teacherId], references: [id])
+  classId     Int
+  class       Class       @relation(fields: [classId], references: [id])
+  date        DateTime    @default(now())
+  status      String      @default("PENDING") // PENDING, DISTRIBUTED
+  items       OrderItem[]
+  totalAmount Float
+  commission  Float
+  netCost     Float
+  deliveredDate DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  type      String   // "SET" or "BOOK"
+  bookId    String?
+  book      Book?    @relation(fields: [bookId], references: [id])
+  bookSetId String?
+  bookSet   BookSet? @relation(fields: [bookSetId], references: [id])
+  quantity  Int
+  price     Float
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  teacherId String
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  amount    Float
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}

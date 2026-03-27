@@ -1,66 +1,98 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { getDashboardStats } from '@/lib/actions/report'
+import { ShoppingBag, Landmark, Wallet, Percent, TrendingUp } from 'lucide-react'
 
-export default function Home() {
+export default async function Dashboard() {
+  const stats = await getDashboardStats()
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="container">
+      <header className="mb-12">
+        <h1 className="text-4xl font-black tracking-tighter mb-2 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">System Overview</h1>
+        <p className="text-muted-foreground/80 font-medium">Real-time repository telemetry and distribution metrics.</p>
+      </header>
+
+      {/* Hero Section */}
+      <div className="card mb-12 overflow-hidden relative border-primary/20 bg-gradient-to-br from-primary/10 to-transparent backdrop-blur-3xl" style={{ minHeight: '260px', display: 'flex', alignItems: 'center' }}>
+        <div className="relative z-10 max-w-xl p-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-4 ring-1 ring-primary/30">Next-Gen Management</span>
+          <h2 className="text-3xl font-black mb-4 tracking-tighter leading-none">Streamline Your <span className="text-primary text-glow">Madrasa Workflow</span></h2>
+          <p className="text-muted-foreground font-medium mb-8 leading-relaxed max-w-sm">A centralized, high-performance ecosystem for tracking curriculum, orders, and financial data with surgical precision.</p>
+          <div className="flex gap-4">
+            <button className="btn btn-primary shadow-2xl shadow-primary/40 px-8">Initialize Order</button>
+            <button className="btn btn-secondary border border-white/10 bg-white/5 backdrop-blur-sm">View Analytics</button>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="absolute right-0 top-0 h-full w-2/3 pointer-events-none">
+          <img 
+            src="/hero.png" 
+            alt="Hero" 
+            className="h-full w-full object-cover opacity-20 grayscale group-hover:grayscale-0 transition-all duration-700"
+            style={{ maskImage: 'linear-gradient(to left, black, transparent, transparent)' }}
+          />
+          {/* Decorative Glow */}
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full"></div>
         </div>
-      </main>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="card flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <ShoppingBag size={24} />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted mb-1">Total Orders</p>
+            <p className="text-3xl font-bold">₹{stats.totalOrdersValue.toLocaleString()}</p>
+          </div>
+        </div>
+        
+        <div className="card flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-success/10 rounded-lg text-success">
+              <Landmark size={24} />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted mb-1">Total Collected</p>
+            <p className="text-3xl font-bold text-success">₹{stats.totalCollectedAmount.toLocaleString()}</p>
+          </div>
+        </div>
+
+        <div className="card flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-destructive/10 rounded-lg text-destructive">
+              <Wallet size={24} />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted mb-1">Total Due</p>
+            <p className="text-3xl font-bold text-destructive">₹{stats.totalDueAmount.toLocaleString()}</p>
+          </div>
+        </div>
+
+        <div className="card flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-warning/10 rounded-lg text-warning">
+              <Percent size={24} />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted mb-1">Commission Earned</p>
+            <p className="text-3xl font-bold text-warning">₹{stats.totalCommissionEarned.toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="flex items-center gap-2 mb-6">
+          <TrendingUp className="text-primary" size={24} />
+          <h2 className="text-xl font-bold">Recent Activity</h2>
+        </div>
+        <div className="card text-center py-12">
+          <p className="text-muted italic">No recent activity to display.</p>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
