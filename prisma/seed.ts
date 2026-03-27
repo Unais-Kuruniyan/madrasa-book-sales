@@ -190,6 +190,43 @@ async function main() {
     }
   }
 
+  // 4. Seed Teachers
+  const teachers = [
+    { name: 'Kunhappu Usthad', classIds: [1, 2] },
+    { name: 'Thangal Usthad', classIds: [8] },
+    { name: 'Latheef Usthad', classIds: [3, 9] },
+    { name: 'Shafi Usthad', classIds: [6] },
+    { name: 'Salman Usthad', classIds: [5, 10] },
+    { name: 'Unais Usthad', classIds: [7] },
+    { name: 'Rahoof Usthad', classIds: [4] },
+  ]
+
+  for (const t of teachers) {
+    const existing = await prisma.teacher.findFirst({
+      where: { name: t.name }
+    })
+
+    if (existing) {
+      await prisma.teacher.update({
+        where: { id: existing.id },
+        data: {
+          classes: {
+            set: t.classIds.map(id => ({ id }))
+          }
+        }
+      })
+    } else {
+      await prisma.teacher.create({
+        data: {
+          name: t.name,
+          classes: {
+            connect: t.classIds.map(id => ({ id }))
+          }
+        }
+      })
+    }
+  }
+
   console.log('Seed: Data populated successfully.')
 }
 
