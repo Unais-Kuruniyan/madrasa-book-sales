@@ -45,21 +45,24 @@ export async function getDepotPurchaseSummary() {
 
 export async function getDashboardStats() {
   const orders = await prisma.order.findMany({
-    select: { totalAmount: true, commission: true },
+    select: { totalAmount: true },
   })
   const payments = await prisma.payment.findMany({
     select: { amount: true },
   })
+  const expenses = await prisma.expense.findMany({
+    select: { amount: true },
+  })
 
   const totalOrdersValue = orders.reduce((sum, o) => sum + o.totalAmount, 0)
-  const totalCommissionEarned = orders.reduce((sum, o) => sum + o.commission, 0)
   const totalCollectedAmount = payments.reduce((sum, p) => sum + p.amount, 0)
-  const totalDueAmount = totalOrdersValue - totalCollectedAmount
+  const totalExpensesAmount = expenses.reduce((sum, e) => sum + e.amount, 0)
+  const netProfitAmount = totalCollectedAmount - totalExpensesAmount
 
   return {
     totalOrdersValue,
     totalCollectedAmount,
-    totalDueAmount,
-    totalCommissionEarned,
+    totalExpensesAmount,
+    netProfitAmount,
   }
 }

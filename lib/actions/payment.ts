@@ -19,7 +19,7 @@ export async function createPayment(data: { teacherId: string; amount: number; d
     },
   })
   revalidatePath('/payments')
-  revalidatePath('/dashboard')
+  revalidatePath('/')
   return payment
 }
 
@@ -47,7 +47,7 @@ export async function getTeacherFinancialSummary(teacherId: string) {
 export async function deletePayment(id: string) {
   await prisma.payment.delete({ where: { id } })
   revalidatePath('/payments')
-  revalidatePath('/dashboard')
+  revalidatePath('/')
 }
 
 export async function updatePayment(id: string, data: { amount: number; date?: Date }) {
@@ -59,6 +59,6 @@ export async function updatePayment(id: string, data: { amount: number; date?: D
     },
   })
   revalidatePath('/payments')
-  revalidatePath('/dashboard')
+  revalidatePath('/')
   return result
 }

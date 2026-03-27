@@ -12,9 +12,9 @@ export default async function PaymentsPage() {
           <div className="p-2 bg-primary/10 rounded-lg text-primary">
             <Landmark size={24} />
           </div>
-          <h1 className="text-3xl font-bold font-display">Financial Accounts</h1>
+          <h1 className="text-3xl font-bold font-display">Financial Accounts & Accounting</h1>
         </div>
-        <p className="text-muted mt-2">Manage teacher ledgers, record payments, and track outstanding balances.</p>
+        <p className="text-muted mt-2">Track payments, add operational expenses, and see profit calculated automatically.</p>
       </header>
 
       <PaymentManager teachers={teachers} />

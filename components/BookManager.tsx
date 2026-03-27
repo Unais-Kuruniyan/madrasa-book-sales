@@ -157,7 +157,7 @@ export default function BookManager({ classes }: { classes: any[] }) {
         </div>
 
         {/* Full Set Price Config */}
-        <div className="card h-fit sticky top-24 border-warning/20 bg-warning/5">
+        <div className="card h-fit lg:sticky lg:top-8 border-warning/20 bg-warning/5">
           <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
             <Layers className="text-warning" size={24} />
             <span>Set Configuration</span>
