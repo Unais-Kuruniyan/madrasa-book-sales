@@ -46,13 +46,18 @@ type AccountingSummary = {
   netProfitAmount: number
 }
 
+type TeacherOption = {
+  id: string
+  name: string
+}
+
 const formatDate = (date: string | Date) => {
   const d = new Date(date)
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
 }
 
-export default function PaymentManager({ teachers }: { teachers: any[] }) {
+export default function PaymentManager({ teachers }: { teachers: TeacherOption[] }) {
   const [teacherId, setTeacherId] = useState('')
   const [summary, setSummary] = useState<TeacherSummary | null>(null)
   const [payments, setPayments] = useState<PaymentItem[]>([])
@@ -67,6 +72,7 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
   const [expenseAmount, setExpenseAmount] = useState('')
   const [expenseNotes, setExpenseNotes] = useState('')
   const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null)
+  const selectedTeacher = teachers.find((teacher) => teacher.id === teacherId)
 
   const loadTeacherData = async (selectedTeacherId: string) => {
     if (!selectedTeacherId) {
@@ -294,6 +300,12 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
                 <div className="flex flex-col gap-1 min-w-0 flex-1 mr-4">
                   <span className="font-bold text-sm truncate">{expense.title}</span>
                   <span className="text-xs text-muted-foreground/60">{formatDate(expense.date)}</span>
+                  <span className="text-[11px] text-muted-foreground/80">
+                    Paid By: Madrasa Book Depot
+                  </span>
+                  <span className="text-[11px] text-muted-foreground/80">
+                    Paid To: {expense.title}
+                  </span>
                   {expense.notes && <span className="text-xs text-muted italic">{expense.notes}</span>}
                 </div>
                 <div className="record-actions">
@@ -418,6 +430,12 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs text-muted-foreground/60 font-black tracking-widest uppercase">{formatDate(payment.date)}</span>
+                      <span className="text-[11px] text-muted-foreground/80">
+                        Paid By: {selectedTeacher?.name || 'Teacher'}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground/80">
+                        Received By: Madrasa Book Depot
+                      </span>
                       <span className="text-xl font-black text-white group-hover:text-success transition-colors">Rs. {payment.amount.toLocaleString()}</span>
                     </div>
                   </div>

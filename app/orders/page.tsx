@@ -1,14 +1,16 @@
 import { getTeachers } from '@/lib/actions/teacher'
 import { getClasses } from '@/lib/actions/class'
-import { getOrders } from '@/lib/actions/order'
+import { getClassWiseOrderSummary, getOrders } from '@/lib/actions/order'
 import OrderForm from '@/components/OrderForm'
 import OrderList from '@/components/OrderList'
+import ClassWiseOrderSummary from '@/components/ClassWiseOrderSummary'
 import { ShoppingBag, History, Plus } from 'lucide-react'
 
 export default async function OrdersPage() {
   const teachers = await getTeachers()
   const classes = await getClasses()
   const orders = await getOrders()
+  const classWiseSummary = await getClassWiseOrderSummary()
 
   return (
     <div className="container">
@@ -45,6 +47,10 @@ export default async function OrdersPage() {
             </h2>
           </div>
           <OrderList orders={orders} />
+        </section>
+
+        <section>
+          <ClassWiseOrderSummary summaries={classWiseSummary} />
         </section>
       </div>
     </div>

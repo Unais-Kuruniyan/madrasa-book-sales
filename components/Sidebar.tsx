@@ -31,7 +31,9 @@ const navItems = [
   { name: 'Depot Summary', href: '/depot-summary', icon: Package },
 ]
 
-export default function Sidebar() {
+type Theme = 'dark' | 'light'
+
+export default function Sidebar({ initialTheme }: { initialTheme: Theme }) {
   const pathname = usePathname()
 
   return (
@@ -49,7 +51,7 @@ export default function Sidebar() {
         </Link>
         <div className="flex items-center gap-2">
           <span className="brand-chip">PREMIUM</span>
-          <ThemeToggle />
+          <ThemeToggle initialTheme={initialTheme} />
         </div>
       </div>
 
