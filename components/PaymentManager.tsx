@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPayment, deletePayment, getPaymentsByTeacher, getTeacherFinancialSummary, updatePayment } from '@/lib/actions/payment'
 import { createExpense, deleteExpense, getAccountingSummary, getExpenses, updateExpense } from '@/lib/actions/expense'
 import {
@@ -49,6 +49,8 @@ type AccountingSummary = {
 type TeacherOption = {
   id: string
   name: string
+  orders?: Array<{ totalAmount: number }>
+  payments?: Array<{ amount: number }>
 }
 
 const formatDate = (date: string | Date) => {
@@ -73,6 +75,22 @@ export default function PaymentManager({ teachers }: { teachers: TeacherOption[]
   const [expenseNotes, setExpenseNotes] = useState('')
   const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null)
   const selectedTeacher = teachers.find((teacher) => teacher.id === teacherId)
+  const usthadLedgerRows = useMemo(
+    () =>
+      teachers.map((teacher) => {
+        const liability = (teacher.orders || []).reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+        const remitted = (teacher.payments || []).reduce((sum, payment) => sum + (payment.amount || 0), 0)
+        const balance = liability - remitted
+        return {
+          id: teacher.id,
+          name: teacher.name,
+          liability,
+          remitted,
+          balance,
+        }
+      }),
+    [teachers]
+  )
 
   const loadTeacherData = async (selectedTeacherId: string) => {
     if (!selectedTeacherId) {
@@ -331,6 +349,58 @@ export default function PaymentManager({ teachers }: { teachers: TeacherOption[]
 
       <div className="card bg-primary/5 border-primary/20">
         <h3 className="text-lg font-bold mb-6">Teacher Ledger</h3>
+
+        <div className="mb-6">
+          <div className="text-[10px] font-bold text-muted uppercase tracking-widest mb-3 px-1">
+            All Usthads Summary
+          </div>
+          <div className="max-h-[320px] overflow-y-auto no-scrollbar rounded-xl border border-border/50">
+            {usthadLedgerRows.length > 0 && (
+              <table className="w-full min-w-[640px] text-sm">
+                <thead className="bg-secondary/30 sticky top-0 z-10">
+                  <tr className="text-left">
+                    <th className="px-3 py-2 text-[11px] uppercase tracking-wider text-muted">Usthad</th>
+                    <th className="px-3 py-2 text-[11px] uppercase tracking-wider text-muted">Liability</th>
+                    <th className="px-3 py-2 text-[11px] uppercase tracking-wider text-muted">Remitted</th>
+                    <th className="px-3 py-2 text-[11px] uppercase tracking-wider text-muted">Balance</th>
+                    <th className="px-3 py-2 text-[11px] uppercase tracking-wider text-muted text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usthadLedgerRows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className={`border-t border-border/40 ${
+                        teacherId === row.id ? 'bg-primary/10' : 'bg-background/20'
+                      }`}
+                    >
+                      <td className="px-3 py-2 font-bold">{row.name}</td>
+                      <td className="px-3 py-2 font-semibold">Rs. {row.liability.toLocaleString()}</td>
+                      <td className="px-3 py-2 font-semibold text-success">Rs. {row.remitted.toLocaleString()}</td>
+                      <td className={`px-3 py-2 font-semibold ${row.balance > 0 ? 'text-warning' : 'text-success'}`}>
+                        Rs. {row.balance.toLocaleString()}
+                      </td>
+                      <td className="px-3 py-2 text-right">
+                        <button
+                          type="button"
+                          className="btn btn-secondary h-8 px-3 text-xs"
+                          onClick={() => setTeacherId(row.id)}
+                        >
+                          Select
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {usthadLedgerRows.length === 0 && (
+              <div className="py-6 text-center border border-dashed border-border rounded-xl text-sm text-muted italic">
+                No usthad records found.
+              </div>
+            )}
+          </div>
+        </div>
 
         <label className="text-xs font-bold text-muted uppercase tracking-widest mb-2 block px-1">Select Faculty Member</label>
         <div className="relative">
