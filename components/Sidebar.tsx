@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import ThemeToggle from '@/components/ThemeToggle'
 import { 
   LayoutDashboard, 
   Users, 
@@ -43,10 +44,13 @@ export default function Sidebar() {
           </span>
           <span className="brand-copy">
             <span className="brand-title">MADRASA BOOK MANAGER</span>
-            <span className="brand-subtitle">Finance | Orders | Inventory</span>
+          <span className="brand-subtitle">Finance | Orders | Inventory</span>
           </span>
         </Link>
-        <span className="brand-chip">PREMIUM</span>
+        <div className="flex items-center gap-2">
+          <span className="brand-chip">PREMIUM</span>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Mobile Icon Navigation */}
