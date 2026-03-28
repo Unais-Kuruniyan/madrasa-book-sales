@@ -141,11 +141,11 @@ export default function BookManager({ classes }: { classes: any[] }) {
                     <span className="font-semibold text-lg">{b.name}</span>
                     <span className="text-sm font-extrabold text-primary">₹{b.price.toLocaleString()}</span>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" onClick={() => startEditBook(b)}>
+                  <div className="record-actions">
+                    <button className="action-btn action-btn-edit" title="Edit Book" onClick={() => startEditBook(b)}>
                       <Pencil size={18} />
                     </button>
-                    <button className="p-2 text-muted hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors" onClick={() => handleDeleteBook(b.id)}>
+                    <button className="action-btn action-btn-delete" title="Delete Book" onClick={() => handleDeleteBook(b.id)}>
                       <Trash2 size={18} />
                     </button>
                   </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
@@ -11,8 +11,7 @@ import {
   ShoppingCart, 
   CreditCard, 
   Package, 
-  Menu, 
-  X 
+  Building2
 } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -33,38 +32,49 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
-      {/* Mobile Header */}
-      <div className="mobile-header bg-card/40 backdrop-blur-xl border-b border-white/5">
-        <span className="text-xl font-black bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent group-hover:from-white group-hover:to-white/80 transition-all duration-500">MADRASA MANAGER</span>
-        <button className="btn btn-secondary p-2 bg-white/5 border border-white/10" onClick={() => setIsOpen(true)}>
-          <Menu size={24} />
-        </button>
+      {/* App Header */}
+      <div className="mobile-header app-header">
+        <Link href="/" className="brand-shell">
+          <span className="brand-emblem">
+            <Building2 size={18} className="text-primary" />
+          </span>
+          <span className="brand-copy">
+            <span className="brand-title">MADRASA BOOK MANAGER</span>
+            <span className="brand-subtitle">Finance | Orders | Inventory</span>
+          </span>
+        </Link>
+        <span className="brand-chip">PREMIUM</span>
       </div>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {/* Mobile Icon Navigation */}
+      <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 lg:hidden px-2 py-2 overflow-x-auto no-scrollbar">
+        <div className="flex gap-2">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link
+                key={`mobile-${item.href}`}
+                href={item.href}
+                className={cn(
+                  "mobile-nav-link btn btn-secondary flex-col gap-1 px-4 py-3 whitespace-nowrap border",
+                  isActive
+                    ? "mobile-nav-link-active"
+                    : "mobile-nav-link-idle"
+                )}
+              >
+                <item.icon size={18} />
+                <span className="text-xs font-bold">{item.name}</span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
 
       {/* Sidebar */}
-      <aside className={cn("sidebar bg-card/20 backdrop-blur-2xl border-r border-white/5 shadow-2xl", isOpen && "open")}>
-        <div className="flex justify-between items-center mb-12 px-2">
-          <Link href="/" className="group flex flex-col" onClick={() => setIsOpen(false)}>
-            <span className="text-2xl font-black tracking-tighter text-white group-hover:text-primary transition-colors">MADRASA</span>
-            <span className="text-[10px] font-bold tracking-[0.4em] text-primary/80 -mt-1 group-hover:text-white transition-colors">MANAGEMENT</span>
-          </Link>
-          <button className="lg:hidden p-2 text-muted-foreground hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
-            <X size={24} />
-          </button>
-        </div>
-
+      <aside className="sidebar desktop-sidebar sidebar-panel">
         <nav className="flex flex-col gap-2 flex-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href
@@ -73,10 +83,9 @@ export default function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "nav-link group relative overflow-hidden transition-all duration-300",
-                  isActive ? "bg-primary/20 text-white shadow-lg shadow-primary/10 ring-1 ring-primary/30" : "hover:bg-white/5"
+                  "nav-link desktop-nav-link group relative overflow-hidden transition-all duration-300",
+                  isActive ? "desktop-nav-link-active" : "desktop-nav-link-idle"
                 )}
-                onClick={() => setIsOpen(false)}
               >
                 {isActive && (
                   <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full shadow-primary-glow"></div>

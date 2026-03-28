@@ -91,11 +91,42 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
   }
 
   useEffect(() => {
-    loadAccountingData()
+    let active = true
+
+    const fetchAccounting = async () => {
+      const [globalSummary, allExpenses] = await Promise.all([getAccountingSummary(), getExpenses()])
+      if (!active) return
+      setAccountingSummary(globalSummary)
+      setExpenses(allExpenses)
+    }
+
+    void fetchAccounting()
+
+    return () => {
+      active = false
+    }
   }, [])
 
   useEffect(() => {
-    loadTeacherData(teacherId)
+    if (!teacherId) return
+
+    let active = true
+
+    const fetchTeacher = async () => {
+      const [teacherSummary, teacherPayments] = await Promise.all([
+        getTeacherFinancialSummary(teacherId),
+        getPaymentsByTeacher(teacherId),
+      ])
+      if (!active) return
+      setSummary(teacherSummary)
+      setPayments(teacherPayments)
+    }
+
+    void fetchTeacher()
+
+    return () => {
+      active = false
+    }
   }, [teacherId])
 
   const handleAddOrUpdatePayment = async (e: React.FormEvent) => {
@@ -166,7 +197,7 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="card bg-primary/5 border-primary/20">
+      <div id="accounting-overview" className="card bg-primary/5 border-primary/20">
         <h3 className="text-lg font-bold mb-6">Accounting Overview</h3>
 
         {accountingSummary && (
@@ -265,12 +296,12 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
                   <span className="text-xs text-muted-foreground/60">{formatDate(expense.date)}</span>
                   {expense.notes && <span className="text-xs text-muted italic">{expense.notes}</span>}
                 </div>
-                <div className="flex items-start gap-1">
+                <div className="record-actions">
                   <span className="text-sm font-black text-warning whitespace-nowrap">Rs. {expense.amount.toLocaleString()}</span>
-                  <button className="p-2 text-muted hover:text-primary hover:bg-primary/10 rounded-lg" onClick={() => startEditExpense(expense)}>
+                  <button className="action-btn action-btn-edit" title="Edit Expense" onClick={() => startEditExpense(expense)}>
                     <Pencil size={16} />
                   </button>
-                  <button className="p-2 text-muted hover:text-destructive hover:bg-destructive/10 rounded-lg" onClick={() => handleDeleteExpense(expense.id)}>
+                  <button className="action-btn action-btn-delete" title="Delete Expense" onClick={() => handleDeleteExpense(expense.id)}>
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -294,7 +325,18 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
             <User size={18} />
           </div>
-          <select className="input-field pl-10 h-12 text-lg font-medium" value={teacherId} onChange={(e) => setTeacherId(e.target.value)}>
+          <select
+            className="input-field pl-10 h-12 text-lg font-medium"
+            value={teacherId}
+            onChange={(e) => {
+              const nextTeacherId = e.target.value
+              setTeacherId(nextTeacherId)
+              if (!nextTeacherId) {
+                setSummary(null)
+                setPayments([])
+              }
+            }}
+          >
             <option value="">Choose a teacher...</option>
             {teachers.map((teacher) => (
               <option key={teacher.id} value={teacher.id}>
@@ -379,11 +421,11 @@ export default function PaymentManager({ teachers }: { teachers: any[] }) {
                       <span className="text-xl font-black text-white group-hover:text-success transition-colors">Rs. {payment.amount.toLocaleString()}</span>
                     </div>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" onClick={() => startEditPayment(payment)}>
+                  <div className="record-actions">
+                    <button className="action-btn action-btn-edit" title="Edit Payment" onClick={() => startEditPayment(payment)}>
                       <Pencil size={18} />
                     </button>
-                    <button className="p-2 text-muted hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors" onClick={() => handleDeletePayment(payment.id)}>
+                    <button className="action-btn action-btn-delete" title="Delete Payment" onClick={() => handleDeletePayment(payment.id)}>
                       <Trash2 size={18} />
                     </button>
                   </div>

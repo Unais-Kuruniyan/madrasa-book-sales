@@ -126,11 +126,11 @@ export default function TeacherList({ initialTeachers, classes }: { initialTeach
                     <span>{t.contact || 'No contact info'}</span>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <button className="p-2.5 text-muted-foreground hover:text-white hover:bg-white/10 rounded-xl transition-all border border-transparent hover:border-white/10" title="Edit Teacher" onClick={() => startEdit(t)}>
+                <div className="record-actions">
+                  <button className="action-btn action-btn-edit" title="Edit Teacher" onClick={() => startEdit(t)}>
                     <Pencil size={18} />
                   </button>
-                  <button className="p-2.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all border border-transparent hover:border-destructive/20" title="Delete Teacher" onClick={async () => {
+                  <button className="action-btn action-btn-delete" title="Delete Teacher" onClick={async () => {
                     if (confirm('Permanently delete this teacher?')) {
                       await deleteTeacher(t.id)
                       setTeachers(teachers.filter(item => item.id !== t.id))
