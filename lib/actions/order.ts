@@ -60,7 +60,7 @@ export async function getOrders() {
   })
 }
 
-export async function updateOrderStatus(id: string, status: string, deliveredDate?: Date) {
+export async function updateOrderStatus(id: string, status: string, deliveredDate?: Date | null) {
   const order = await prisma.order.update({
     where: { id },
     data: {

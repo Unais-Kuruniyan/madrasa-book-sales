@@ -23,7 +23,7 @@ export default async function OrdersPage() {
       </header>
 
       <div className="grid gap-16">
-        <section>
+        <section id="new-order">
           <div className="flex items-center gap-2 mb-6">
             <div className="h-8 w-1 bg-primary rounded-full"></div>
             <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
