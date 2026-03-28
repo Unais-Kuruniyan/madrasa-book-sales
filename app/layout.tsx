@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 type Theme = 'dark' | 'light'
 
 function normalizeTheme(value: string | undefined): Theme {
-  return value === 'light' ? 'light' : 'dark'
+  return value === 'dark' ? 'dark' : 'light'
 }
 
 export default async function RootLayout({
