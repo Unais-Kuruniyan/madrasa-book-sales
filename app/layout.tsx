@@ -27,8 +27,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`
+            (function () {
+              try {
+                var key = 'mbm-theme';
+                var stored = localStorage.getItem(key);
+                var next = (stored === 'light' || stored === 'dark')
+                  ? stored
+                  : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', next);
+              } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+              }
+            })();
+          `}
+        </Script>
         <div className="flex">
           <Sidebar />
           <main className="main-content">
