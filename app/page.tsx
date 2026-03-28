@@ -1,5 +1,6 @@
 import { getDashboardStats } from '@/lib/actions/report'
 import { ShoppingBag, Landmark, Wallet, TrendingUp } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function Dashboard() {
   const stats = await getDashboardStats()
@@ -18,8 +19,12 @@ export default async function Dashboard() {
           <h2 className="text-3xl font-black mb-4 tracking-tighter leading-none">Streamline Your <span className="text-primary text-glow">Madrasa Workflow</span></h2>
           <p className="text-muted-foreground font-medium mb-8 leading-relaxed max-w-sm">A centralized, high-performance ecosystem for tracking curriculum, orders, and financial data with surgical precision.</p>
           <div className="flex flex-wrap gap-3">
-            <button className="btn btn-primary shadow-2xl shadow-primary/40 px-8">Initialize Order</button>
-            <button className="btn btn-secondary border border-white/10 bg-white/5 backdrop-blur-sm">View Analytics</button>
+            <Link href="/orders#new-order" className="btn btn-primary shadow-2xl shadow-primary/40 px-8">
+              Initialize Order
+            </Link>
+            <Link href="/payments#accounting-overview" className="btn btn-secondary border border-white/10 bg-white/5 backdrop-blur-sm">
+              View Analytics
+            </Link>
           </div>
         </div>
         <div className="absolute right-0 top-0 h-full w-2/3 pointer-events-none">

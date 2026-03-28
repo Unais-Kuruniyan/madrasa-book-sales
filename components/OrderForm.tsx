@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createOrder, OrderItemInput } from '@/lib/actions/order'
-import { ShoppingCart, Plus, Trash2, Layers, BookOpen, Calculator, User, GraduationCap, CheckCircle2 } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, Trash2, Layers, BookOpen, Calculator, User, GraduationCap, CheckCircle2 } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -19,8 +19,16 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
   const selectedTeacher = teachers.find(t => t.id === teacherId)
   const availableClasses = selectedTeacher ? selectedTeacher.classes : []
   const selectedClass = classes.find(c => c.id === parseInt(classId))
+  const quranClass = classes.find((c) => c.name?.toLowerCase().includes('qura'))
+  const othersClass = classes.find((c) => c.name?.toLowerCase().includes('other'))
+  const allBooks = classes.flatMap((c) => c.books || [])
 
   const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0)
+
+  const getBookName = (bookId?: string) => {
+    if (!bookId) return 'Book'
+    return allBooks.find((b: any) => b.id === bookId)?.name || 'Book'
+  }
 
   const addItem = (type: 'SET' | 'BOOK', id: string, name: string, price: number) => {
     const existing = items.find(i => (type === 'SET' ? i.bookSetId === id : i.bookId === id))
@@ -39,6 +47,19 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
 
   const removeItem = (index: number) => {
     setItems(items.filter((_, i) => i !== index))
+  }
+
+  const updateItemQuantity = (index: number, delta: number) => {
+    setItems((prev) =>
+      prev.flatMap((item, i) => {
+        if (i !== index) return [item]
+
+        const nextQuantity = item.quantity + delta
+        if (nextQuantity <= 0) return []
+
+        return [{ ...item, quantity: nextQuantity }]
+      })
+    )
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,6 +140,46 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
                   </button>
                 ))}
               </div>
+
+              {quranClass && quranClass.id !== selectedClass.id && (
+                <div className="space-y-2 pt-3 border-t border-border/40">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Quran Add-ons</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {quranClass.books.map((b: any) => (
+                      <button key={b.id} type="button" className="btn btn-secondary w-full justify-between h-12 border-primary/20 bg-primary/5 hover:bg-primary/10 group" onClick={() => addItem('BOOK', b.id, b.name, b.price)}>
+                        <div className="flex items-center gap-3">
+                          <BookOpen size={16} className="text-primary" />
+                          <span className="text-sm font-medium">{b.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-primary">₹{b.price}</span>
+                          <Plus size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {othersClass && othersClass.id !== selectedClass.id && (
+                <div className="space-y-2 pt-3 border-t border-border/40">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-warning">Others Add-ons</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {othersClass.books.map((b: any) => (
+                      <button key={b.id} type="button" className="btn btn-secondary w-full justify-between h-12 border-warning/20 bg-warning/5 hover:bg-warning/10 group" onClick={() => addItem('BOOK', b.id, b.name, b.price)}>
+                        <div className="flex items-center gap-3">
+                          <BookOpen size={16} className="text-warning" />
+                          <span className="text-sm font-medium">{b.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-warning">₹{b.price}</span>
+                          <Plus size={14} className="text-warning opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -132,12 +193,32 @@ export default function OrderForm({ teachers, classes }: { teachers: any[], clas
               {items.map((item, index) => (
                 <div key={index} className="flex justify-between items-center p-3 bg-secondary/30 rounded-xl border border-border/50 animate-in fade-in slide-in-from-right-2 duration-300">
                   <div className="flex flex-col min-w-0 flex-1 mr-4">
-                    <span className="font-bold text-sm truncate">{item.type === 'SET' ? 'Full Set' : selectedClass.books.find((b: any) => b.id === item.bookId)?.name}</span>
-                    <span className="text-[10px] text-muted font-black uppercase tracking-widest">Qty: {item.quantity}</span>
+                    <span className="font-bold text-sm truncate">{item.type === 'SET' ? 'Full Set' : getBookName(item.bookId)}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <button
+                        type="button"
+                        className="action-btn action-btn-edit"
+                        title="Decrease quantity"
+                        onClick={() => updateItemQuantity(index, -1)}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="text-[10px] text-muted font-black uppercase tracking-widest text-center" style={{ minWidth: '52px' }}>
+                        Qty: {item.quantity}
+                      </span>
+                      <button
+                        type="button"
+                        className="action-btn action-btn-status"
+                        title="Increase quantity"
+                        onClick={() => updateItemQuantity(index, 1)}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="font-black text-sm text-foreground whitespace-nowrap">₹{(item.quantity * item.price).toLocaleString()}</span>
-                    <button type="button" className="p-2 hover:bg-destructive/10 rounded-lg text-muted hover:text-destructive transition-colors" onClick={() => removeItem(index)}>
+                    <button type="button" className="action-btn action-btn-delete" title="Remove item" onClick={() => removeItem(index)}>
                       <Trash2 size={14} />
                     </button>
                   </div>

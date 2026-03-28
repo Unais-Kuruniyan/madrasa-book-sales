@@ -1,7 +1,7 @@
 'use client'
 
 import { updateOrderStatus, deleteOrder } from '@/lib/actions/order'
-import { PackageCheck, Trash2, Printer, Clock, CheckCircle2, ShoppingCart, GraduationCap, User } from 'lucide-react'
+import { Trash2, Printer, Clock, CheckCircle2, ShoppingCart, GraduationCap, User, Pencil } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -16,9 +16,13 @@ const formatDate = (date: string | Date) => {
 }
 
 export default function OrderList({ orders }: { orders: any[] }) {
-  const handleMarkDistributed = async (id: string) => {
-    if (confirm('Mark as distributed?')) {
-      await updateOrderStatus(id, 'DISTRIBUTED', new Date())
+  const handleEditStatus = async (id: string, currentStatus: string) => {
+    const isPending = currentStatus === 'PENDING'
+    const nextStatus = isPending ? 'DISTRIBUTED' : 'PENDING'
+    const confirmText = isPending ? 'Set this order as delivered?' : 'Move this order back to pending?'
+
+    if (confirm(confirmText)) {
+      await updateOrderStatus(id, nextStatus, isPending ? new Date() : null)
       window.location.reload()
     }
   }
@@ -77,23 +81,21 @@ export default function OrderList({ orders }: { orders: any[] }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-border">
-            {o.status === 'PENDING' && (
-              <button 
-                className="btn btn-secondary text-xs bg-success/10 text-success border border-success/20 hover:bg-success/20 h-10 px-4" 
-                onClick={() => handleMarkDistributed(o.id)}
-              >
-                <PackageCheck size={16} />
-                <span>Mark Delivered</span>
-              </button>
-            )}
+            <button
+              className="btn btn-secondary text-xs border border-primary/20 text-primary hover:bg-primary/10 h-10 px-4"
+              onClick={() => handleEditStatus(o.id, o.status)}
+            >
+              <Pencil size={16} />
+              <span>{o.status === 'PENDING' ? 'Set Delivered' : 'Set Pending'}</span>
+            </button>
             <button 
-              className="btn btn-secondary h-10 w-10 p-0 text-muted hover:text-foreground" 
+              className="action-btn" 
               title="Print Order Summary"
             >
               <Printer size={18} />
             </button>
             <button 
-              className="btn btn-secondary h-10 w-10 p-0 text-muted hover:text-destructive group-hover:bg-destructive/10 group-hover:border-destructive/20" 
+              className="action-btn action-btn-delete"
               onClick={() => handleDeleteOrder(o.id)}
               title="Delete Order"
             >

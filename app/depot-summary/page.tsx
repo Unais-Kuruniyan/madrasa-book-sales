@@ -25,6 +25,14 @@ export default async function DepotSummaryPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {Object.entries(summary).map(([className, data]: [string, any]) => (
           <div key={className} className="card relative group hover:border-primary/50 transition-all flex flex-col">
+            {(() => {
+              const diaryQty = data.individualBooks?.['MADRASSA DAIRY'] || 0
+              return diaryQty > 0 ? (
+                <div className="absolute right-4 top-4 z-10 inline-flex items-center gap-1 rounded-full bg-warning/15 border border-warning/30 px-3 py-1 text-[10px] font-bold text-warning uppercase tracking-wider">
+                  Diary Qty: {diaryQty}
+                </div>
+              ) : null
+            })()}
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
               <div className="p-2 bg-secondary rounded-lg">
                 <Layers size={18} className="text-primary" />
