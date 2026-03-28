@@ -1,7 +1,8 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import Sidebar from '@/components/Sidebar'
-import Script from 'next/script'
+import { cookies } from 'next/headers'
+import AppBootstrap from '@/components/AppBootstrap'
 
 export const viewport: Viewport = {
   themeColor: '#6366f1',
@@ -21,45 +22,30 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+type Theme = 'dark' | 'light'
+
+function normalizeTheme(value: string | undefined): Theme {
+  return value === 'light' ? 'light' : 'dark'
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const cookieStore = await cookies()
+  const theme = normalizeTheme(cookieStore.get('mbm-theme')?.value)
+
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
+    <html lang="en" data-theme={theme} suppressHydrationWarning>
       <body>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`
-            (function () {
-              try {
-                var key = 'mbm-theme';
-                var stored = localStorage.getItem(key);
-                var next = (stored === 'light' || stored === 'dark')
-                  ? stored
-                  : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                document.documentElement.setAttribute('data-theme', next);
-              } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-              }
-            })();
-          `}
-        </Script>
         <div className="flex">
-          <Sidebar />
+          <Sidebar initialTheme={theme} />
           <main className="main-content">
             {children}
           </main>
         </div>
-        <Script id="register-sw" strategy="afterInteractive">
-          {`
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js');
-              });
-            }
-          `}
-        </Script>
+        <AppBootstrap />
       </body>
     </html>
   )
